@@ -13,17 +13,15 @@ export class UsersService {
       console.log('Buscando usuario por Google ID o Email');
 
     // Verifica si el usuario ya existe por su googleId o email
-    let user = await this.userDao.findUserByGoogleId(createUserDto.googleId);
-    console.log('xd');
+   let user = await this.userDao.findUserByGoogleId(createUserDto.googleId);
+    //console.log('xd');
 
     if (!user) {
       console.log('Usuario no encontrado, creando uno nuevo');
-
-      // Si no existe, crea uno nuevo en la base de datos
+      
       user = await this.userDao.createUser(createUserDto);
     }
-    
-    return user;  // Devuelve el usuario existente o recién creado
+    return user;
 
   } catch (error) {
     console.error('Error in UsersService.createUser:', error);

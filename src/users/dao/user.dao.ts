@@ -21,17 +21,17 @@ export class UserDao {
   async findUserByGoogleId(googleId: string) {
     return await UserModel.findOne({ googleId }).exec();  // Busca en la colección `users`
   }*/
-    async findUserByGoogleId(googleId: string) {
-      try {
-        console.log('Buscando en MongoDB por googleId:', googleId);
-        const user = await UserModel.findOne({ googleId });
-        console.log('Usuario encontrado:', user);
-        return user;
-      } catch (error) {
-        console.error('Error buscando usuario por googleId:', error);
-        throw error;
-      }}
-    
+ async findUserByGoogleId(googleId: string) {
+  try {
+    console.log('Buscando en MongoDB por googleId:', googleId);
+    const user = await UserModel.findOne({ googleId });
+    console.log('Usuario encontrado:', user);
+    return user;
+  } catch (error) {
+    console.error('Error buscando usuario por googleId:', error);
+    throw error;
+  }
+
 
   async findUserByEmail(email: string) {
     return await UserModel.findOne({ email }).exec();  // Busca en la colección `users`

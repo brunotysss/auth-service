@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import mongoose from 'mongoose';
 
 @Module({
   imports: [
@@ -12,12 +13,20 @@ import { AuthModule } from './auth/auth.module';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
+      useFactory: async (configService: ConfigService) => {
         const uri = configService.get<string>('MONGODB_URI');
-        autoCreate: false;
-        connectTimeoutMS: 30000;  // Aumenta el tiempo de espera para la conexión
-        socketTimeoutMS: 45000;   // Aumenta el tiempo de espera para las operacione
-        console.log('MONGODB_URI:', uri);  // Esto debería imprimir la URI en la consola
+        
+        // Eliminar opciones obsoletas
+        const connection = await mongoose.connect(uri);
+
+        connection.connection.on('connected', () => {
+          console.log('Mongoose conectado correctamente.');
+        });
+
+        connection.connection.on('error', (err) => {
+          console.error('Error en la conexión de Mongoose:', err);
+        });
+
         return { uri };
       },
     }),
