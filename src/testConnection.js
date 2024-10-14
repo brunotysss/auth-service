@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const { UserModel } = require('./users/models/users.model');
 
-const uri = 'mongodb+srv://BRUNOTI:Cbfp4300@testbackend.qusl0lt.mongodb.net/auth-service?retryWrites=true&w=majority';
 
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
