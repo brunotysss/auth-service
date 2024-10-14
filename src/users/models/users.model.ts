@@ -1,4 +1,3 @@
-// src/users/models/user.model.ts
 import { Schema, Document, model } from 'mongoose';
 
 export interface User extends Document {
@@ -7,10 +6,11 @@ export interface User extends Document {
   passwordHash: string;
 }
 
-const UserSchema = new Schema({
+export const UserSchema = new Schema({
   username: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   passwordHash: { type: String, required: true },
 });
 
-export const UserModel = model<User>('User', UserSchema);
+// Si deseas usar el modelo también, exporta UserModel
+export const UserModel = model<User>('User', UserSchema, 'users');
