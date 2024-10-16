@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "commonjs",  // Mantén esto para compatibilidad con NestJS
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2021",
+    "target": "ES2021",  // Está bien, pero también podrías considerar "ES2017" si tienes problemas de compatibilidad
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
@@ -15,7 +15,10 @@
     "strictNullChecks": false,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
-  }
+    "forceConsistentCasingInFileNames": true,  // Cambia esto a `true` para evitar problemas de mayúsculas/minúsculas
+    "noFallthroughCasesInSwitch": true,  // Mejor mantener esto para evitar errores en `switch`
+    "moduleResolution": "node"  // Asegúrate de usar la resolución de módulos de Node.js
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

@@ -1,34 +1,21 @@
-import { UserModel } from './src/users/models/users.model';
 import mongoose from 'mongoose';
+import { UserModel } from './src/users/models/users.model';
+
+const uri = 'mongodb+srv://BRUNOTI:Cbfp4300@testbackend.qusl0lt.mongodb.net/auth-service?retryWrites=true&w=majority';
 
 mongoose.connect(uri)
   .then(() => {
     console.log('Conexión exitosa a MongoDB');
-
-    // Crear un nuevo usuario
-    const newUser = new UserModel({
-      username: 'JohnDoe',
-      email: 'johndoe@example.com',
-      passwordHash: 'hashedpassword'
-    });
-
-    // Guardar el usuario en la base de datos
-    return newUser.save();
-  })
-  .then((user) => {
-    console.log('Usuario creado:', user);
-
-    // Buscar el usuario por email
-    return UserModel.findOne({ email: 'johndoe@example.com' });
+    return UserModel.findOne({ googleId: 'someGoogleId123' });
   })
   .then((user) => {
     if (user) {
-      console.log('Usuario encontrado:', user);
+     // console.log('Usuario encontrado:', user);
     } else {
       console.log('No se encontraron usuarios.');
     }
     mongoose.connection.close();
   })
   .catch((error) => {
-    console.error('Error:', error);
+    console.error('Error al conectar a MongoDB:', error);
   });
