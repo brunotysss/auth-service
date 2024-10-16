@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import { UserModel } from './src/users/models/users.model';
 
-const uri = 'mongodb+srv://BRUNOTI:Cbfp4300@testbackend.qusl0lt.mongodb.net/auth-service?retryWrites=true&w=majority';
 
 mongoose.connect(uri)
   .then(() => {
