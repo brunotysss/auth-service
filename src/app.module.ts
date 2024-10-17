@@ -5,6 +5,8 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import mongoose from 'mongoose';
 import { ThrottlerModule } from '@nestjs/throttler'; // Importa el ThrottlerModule para Rate Limiting
+import { LoggerService } from './common/services/logger.services'; // Asegúrate de ajustar la ruta
+
 //import { APP_GUARD } from '@nestjs/core';
 //import { JwtAuthGuard } from './auth/jwt-auth.guard';
 @Module({
@@ -53,6 +55,8 @@ import { ThrottlerModule } from '@nestjs/throttler'; // Importa el ThrottlerModu
       useClass: JwtAuthGuard, // Usa JwtAuthGuard como guard por defecto
     },
   ],*/
+  providers: [LoggerService],
+  exports: [LoggerService], // Asegúrate de exportar el servicio
 })
 export class AppModule {}
 

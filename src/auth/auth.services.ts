@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/services/users.service';
 import * as bcrypt from 'bcryptjs';
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class AuthService {
@@ -43,9 +44,10 @@ async generatePasswordResetToken(email: string) {
   const payload = { sub: user._id, email: user.email };
   const resetToken = this.jwtService.sign(payload, {
     secret: process.env.JWT_SECRET,
-    expiresIn: '15m', // El token de recuperación expirará en 15 minutos
+    expiresIn: '60m', // El token de recuperación expirará en 15 minutos
   });
-
+ // Envía el correo electrónico
+ await this.sendPasswordResetEmail(email, resetToken);  // <-- Llama aquí
   // Aquí puedes agregar lógica para enviar el token por correo electrónico
   return resetToken;
 }
@@ -67,5 +69,23 @@ async resetPassword(token: string, newPassword: string) {
     throw new Error('Token inválido o expirado');
   } }
 
+  async sendPasswordResetEmail(email: string, token: string) {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail', // O el servicio que estés utilizando
+        auth: {
+            user: process.env.EMAIL_USER, // Tu correo electrónico
+            pass: process.env.EMAIL_PASS,  // Tu contraseña de aplicación o contraseña de correo
+        },
+    });
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Recuperación de Contraseña',
+        text: `Usa este enlace para restablecer tu contraseña: http://localhost:3000/users/reset-password?token=${token}`,
+      };
+
+    return transporter.sendMail(mailOptions);
+}
 
 }
