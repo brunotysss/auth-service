@@ -6,9 +6,10 @@ import { AuthModule } from './auth/auth.module';
 import mongoose from 'mongoose';
 import { ThrottlerModule } from '@nestjs/throttler'; // Importa el ThrottlerModule para Rate Limiting
 import { LoggerService } from './common/services/logger.services'; // Asegúrate de ajustar la ruta
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter'; // Asegúrate de ajustar la ruta
+import { APP_FILTER } from '@nestjs/core';
+import { MetricsService } from './common/services/metrics.service';
 
-//import { APP_GUARD } from '@nestjs/core';
-//import { JwtAuthGuard } from './auth/jwt-auth.guard';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -48,15 +49,15 @@ import { LoggerService } from './common/services/logger.services'; // Asegúrate
     ]),
     AuthModule,
     UsersModule,
-  ],/*
+  ],
   providers: [
     {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard, // Usa JwtAuthGuard como guard por defecto
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter, // Usa el filtro de excepciones global
     },
-  ],*/
-  providers: [LoggerService],
-  exports: [LoggerService], // Asegúrate de exportar el servicio
+    LoggerService,
+    MetricsService,
+  ],
+  exports: [LoggerService,MetricsService], // Asegúrate de exportar el servicio
 })
 export class AppModule {}
-
