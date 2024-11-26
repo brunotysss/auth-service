@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/services/users.service';
 import * as bcrypt from 'bcryptjs';
 import * as nodemailer from 'nodemailer';
+import { RefreshTokenModel } from '../auth/models/refresh-token.model';
 
 @Injectable()
 export class AuthService {
@@ -27,12 +28,54 @@ export class AuthService {
     };
   }
 }*/
+/*
 async login(user: any) {
   const payload = { email: user.email, sub: user._id, roles: user.roles };
   return {
     access_token: this.jwtService.sign(payload),
   };
 }
+*/
+async login(user: any) {
+  const accessToken = this.jwtService.sign(
+    { email: user.email, sub: user._id, roles: user.roles },
+    { secret: process.env.JWT_SECRET, expiresIn: '15m' } // Token de acceso de corta duración
+  );
+
+  const refreshToken = this.jwtService.sign(
+    { sub: user._id },
+    { secret: process.env.REFRESH_TOKEN_SECRET, expiresIn: '7d' } // Token de refresco válido por 7 días
+  );
+
+  // Guardar el Refresh Token en la base de datos
+  await RefreshTokenModel.create({
+    userId: user._id,
+    token: refreshToken,
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  });
+
+  return {
+    accessToken,
+    refreshToken,
+  };
+}
+
+
+async refreshToken(refreshToken: string) {
+  const storedToken = await RefreshTokenModel.findOne({ token: refreshToken });
+  if (!storedToken || storedToken.expiresAt < new Date()) {
+    throw new Error('Refresh token inválido o expirado');
+  }
+
+  const newAccessToken = this.jwtService.sign(
+    { sub: storedToken.userId },
+    { secret: process.env.JWT_SECRET, expiresIn: '15m' }
+  );
+
+  return { accessToken: newAccessToken };
+}
+
+
 
 
 // para recuperar contraseña

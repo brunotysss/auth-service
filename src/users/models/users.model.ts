@@ -1,4 +1,7 @@
 import { Schema, Document, model } from 'mongoose';
+import { MetricsService } from '../../common/metrics/metrics.service'; // Asegúrate de ajustar la ruta
+
+const metricsService = new MetricsService(); // Instancia temporal para métricas
 
 export interface User extends Document {
   username: string;
@@ -32,13 +35,35 @@ export const UserSchema = new Schema({
     firstName: { type: String },
     lastName: { type: String },
     avatar: { type: String },
-    phone: { type: String }
-  }
+    phone: { type: String },
+  },
 });
 
 // Crear índices únicos en `email` y `username`
 UserSchema.index({ email: 1 }, { unique: true });
 UserSchema.index({ username: 1 }, { unique: true });
 
-// Exporta el modelo actualizado
+// Middleware para registrar métricas
+// Middleware para registrar métricas en creación
+UserSchema.post('save', function () {
+  metricsService.incrementRequests('CREATE', 'UserModel', '200');
+});
+
+// Middleware para registrar métricas en actualización
+UserSchema.post('updateOne', function () {
+  metricsService.incrementRequests('UPDATE', 'UserModel', '200');
+});
+
+UserSchema.post('findOneAndUpdate', function () {
+  metricsService.incrementRequests('FIND_AND_UPDATE', 'UserModel', '200');
+});
+
+UserSchema.post('updateMany', function () {
+  metricsService.incrementRequests('BULK_UPDATE', 'UserModel', '200');
+});
+
+// Middleware para registrar métricas en eliminación
+UserSchema.post('deleteOne', function () {
+  metricsService.incrementRequests('DELETE', 'UserModel', '200');
+});
 export const UserModel = model<User>('User', UserSchema, 'users');

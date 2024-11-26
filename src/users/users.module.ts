@@ -5,7 +5,7 @@ import { UsersService } from './services/users.service';
 import { UserDao } from './dao/user.dao';
 import { UserModel, UserSchema } from './models/users.model';
 import { AuthModule } from '../auth/auth.module';  // Importa el AuthModule
-import { LoggerService } from '../common/services/logger.services'; // Importa el LoggerService
+import { LoggerService } from '../common/logger/logger.services'; // Importa el LoggerService
 
 @Module({
   imports: [

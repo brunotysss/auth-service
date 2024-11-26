@@ -5,30 +5,24 @@ import * as bcrypt from 'bcryptjs';
 export class UserFactory {
   static create(createUserDto: CreateUserDto) {
     const hashedPassword = this.hashPassword(createUserDto.password);
-    
+
     const user = {
-      username: createUserDto.username,
-      email: createUserDto.email,
-      passwordHash: hashedPassword,
-      roles: ['user'],  // Rol por defecto
-      isActive: true,   // Por defecto, el usuario está activo
-      createdAt: new Date(),  // Fecha de creación
-      updatedAt: new Date(),  // Fecha de actualización
-      lastLogin: null,  // El último inicio de sesión puede ser null hasta que el usuario inicie sesión por primera vez
-      appId: createUserDto.appId, // Asegúrate de que appId se pase aquí
-      profile: {  // Información adicional del perfil del usuario
-        firstName: createUserDto.firstName || '',
-        lastName: createUserDto.lastName || '',
-        avatar: createUserDto.avatar || '',
-        phone: createUserDto.phone || '',
-      }
+      username: createUserDto.username, // Nombre de usuario
+      email: createUserDto.email, // Correo electrónico
+      passwordHash: hashedPassword, // Contraseña hasheada
+      roles: ['user'], // Rol predeterminado
+      isActive: true, // El usuario está activo por defecto
+      createdAt: new Date(), // Fecha de creación
+      updatedAt: new Date(), // Fecha de última actualización
+      lastLogin: null, // Último inicio de sesión (null por defecto)
+      appId: createUserDto.appId, // Identificador de la aplicación
     };
-    
+
     return user;
   }
 
   private static hashPassword(password: string): string {
     const salt = bcrypt.genSaltSync(10);
-    return bcrypt.hashSync(password, salt); 
+    return bcrypt.hashSync(password, salt);
   }
 }

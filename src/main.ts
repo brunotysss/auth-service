@@ -6,10 +6,12 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';  // Swagger pa
 import { join } from 'path'; // Para manejar rutas
 import { NestExpressApplication } from '@nestjs/platform-express'; // Importa NestExpressApplication
 import * as hbs from 'hbs'; // Importa Handlebars
-import { LoggerService } from './common/services/logger.services'; // Importa el servicio de logger
+import { LoggerService } from './common/logger/logger.services'; // Importa el servicio de logger
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule); // Crea la aplicación como NestExpressApplication
+app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
 
   // Agrega Helmet para mejorar la seguridad
   app.use(helmet());
